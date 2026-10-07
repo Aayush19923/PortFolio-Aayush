@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aayush Jangra | Software Developer</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ===== CSS VARIABLES ===== */
+        :root {
+            --bg-main: #0a0a0f;
+            --bg-card: #14141f;
+            --bg-nav: rgba(10, 10, 15, 0.9);
+            --primary: #6c63ff;
+            --secondary: #00f2fe;
+            --text-main: #f8f8f2;
+            --text-muted: #a0a0c0;
+            --border: rgba(255, 255, 255, 0.08);
+            --gradient: linear-gradient(135deg, #6c63ff, #00f2fe);
+            --max-width: 1200px;
+        }
+
+        /* ===== BASE RESET ===== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        ul { list-style: none; }
+        a { text-decoration: none; color: inherit; }
+
+        /* ===== FOOLPROOF PRELOADER ===== */
+        .loader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 999999;
+            animation: forceHideLoader 0.4s ease 1.2s forwards;
+        }
+
+        .loader-text {
+            font-family: 'Fira Code', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .loader-bar {
+            width: 160px;
+            height: 3px;
+            background: var(--border);
+            margin-top: 15px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .loader-progress {
+            width: 0%;
+            height: 100%;
+            background: var(--gradient);
+            animation: loadProgress 1s ease forwards;
+        }
+
+        @keyframes loadProgress { to { width: 100%; } }
+        @keyframes forceHideLoader {
+            to {
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+            }
+        }
+
+        /* ===== UTILITIES ===== */
+        .gradient-text {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section { padding: 90px 5%; }
+        .container { max-width: var(--max-width); margin: 0 auto; }
+        .section-header { text-align: center; margin-bottom: 3rem; }
+        .section-tag { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: var(--primary); margin-bottom: 0.5rem; display: block; }
+        .section-title { font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 800; }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .btn-primary { background: var(--gradient); color: #fff; }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(108,99,255,0.3); }
+        .btn-outline { border-color: var(--border); color: var(--text-main); }
+        .btn-outline:hover { border-color: var(--primary); background: rgba(108,99,255,0.1); }
+
+        /* ===== NAVBAR ===== */
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: var(--bg-nav);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo { font-size: 1.4rem; font-weight: 800; font-family: 'Fira Code', monospace; }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { font-weight: 500; font-size: 0.95rem; color: var(--text-muted); transition: 0.2s; }
+        .nav-links a:hover { color: var(--text-main); }
+        .nav-cta { background: var(--gradient); color: white !important; padding: 0.5rem 1.3rem; border-radius: 20px; }
+
+        .menu-btn { display: none; background: none; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer; }
+
+        .mobile-nav {
+            position: fixed; inset: 0; background: var(--bg-card); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
+            transform: translateX(100%); transition: transform 0.3s ease; z-index: 999;
+        }
+        .mobile-nav.active { transform: translateX(0); }
+        .mobile-nav a { font-size: 1.4rem; font-weight: 600; }
+
+        /* ===== HERO SECTION ===== */
+        .hero { min-height: 100vh; display: flex; align-items: center; padding-top: 100px; }
+        .hero-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 4rem; align-items: center; }
+        
+        .hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: rgba(108, 99, 255, 0.1); border: 1px solid var(--border); border-radius: 20px; font-size: 0.85rem; color: var(--secondary); margin-bottom: 1.5rem; }
+        .hero-badge .pulse { width: 8px; height: 8px; background: var(--secondary); border-radius: 50%; }
+        
+        .hero h1 { font-size: clamp(2.8rem, 5vw, 4rem); line-height: 1.1; margin-bottom: 0.8rem; }
+        .hero-subtitle { font-family: 'Fira Code', monospace; color: var(--primary); font-size: 1.2rem; margin-bottom: 1.5rem; }
+        .hero p { color: var(--text-muted); font-size: 1.05rem; max-width: 500px; margin-bottom: 2rem; }
+        
+        .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+        
+        .hero-visual {
+            width: 100%;
+            aspect-ratio: 1/1;
+            max-width: 350px;
+            margin: 0 auto;
+            border-radius: 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        /* ===== ABOUT SECTION ===== */
+        .about-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 3rem; align-items: center; }
+        
+        .code-card { background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; font-family: 'Fira Code', monospace; font-size: 0.85rem; }
+        .code-header { background: rgba(0,0,0,0.4); padding: 10px 15px; display: flex; gap: 8px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .dot.r { background: #ff5f56; } .dot.y { background: #ffbd2e; } .dot.g { background: #27c93f; }
+        .code-body { padding: 1.2rem; color: var(--text-muted); line-height: 1.8; }
+        .code-keyword { color: #ff7b72; } .code-string { color: #f1fa8c; } .code-function { color: #8be9fd; }
+        
+        .skills-container { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem; }
+        .skill-tag { background: rgba(255,255,255,0.05); padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; border: 1px solid var(--border); }
+
+        /* ===== QUALIFICATIONS ===== */
+        .tab-buttons { display: flex; justify-content: center; gap: 1rem; margin-bottom: 2.5rem; }
+        .tab-btn { background: transparent; color: var(--text-muted); border: 1px solid var(--border); padding: 0.6rem 1.5rem; border-radius: 30px; cursor: pointer; font-weight: 500; }
+        .tab-btn.active { background: var(--gradient); color: white; border-color: transparent; }
+
+        .tab-content { display: none; max-width: 750px; margin: 0 auto; }
+        .tab-content.active { display: block; }
+        
+        .timeline-item { border-left: 2px solid var(--border); padding: 0 0 2rem 1.5rem; position: relative; }
+        .timeline-item::before { content: ''; position: absolute; left: -7px; top: 0; width: 12px; height: 12px; border-radius: 50%; background: var(--primary); }
+        .timeline-date { color: var(--secondary); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem; display: block; }
+        .timeline-title { font-size: 1.15rem; font-weight: 600; }
+        .timeline-subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+        /* ===== PROJECTS ===== */
+        .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.8rem; }
+        .project-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 1.8rem; transition: 0.3s; display: flex; flex-direction: column; height: 100%; }
+        .project-card:hover { border-color: var(--primary); transform: translateY(-5px); }
+        .project-icon { font-size: 2rem; color: var(--secondary); margin-bottom: 1rem; }
+        .project-title { font-size: 1.2rem; margin-bottom: 0.5rem; }
+        .project-desc { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.2rem; flex-grow: 1; }
+        
+        .project-tech { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+        .project-tech span { font-size: 0.75rem; font-family: 'Fira Code', monospace; color: var(--primary); background: rgba(108,99,255,0.1); padding: 3px 8px; border-radius: 4px; }
+        
+        /* Interactive Working Project Buttons */
+        .project-links { display: flex; gap: 0.8rem; align-items: center; margin-top: auto; }
+        .project-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            text-decoration: none;
+        }
+        .project-btn.github {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+        }
+        .project-btn.github:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--text-main);
+        }
+        .project-btn.demo {
+            background: var(--gradient);
+            color: #fff;
+            border: none;
+        }
+        .project-btn.demo:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* ===== PROJECT LIVE PREVIEW MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            z-index: 99999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 550px;
+            width: 100%;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        }
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+        .modal-close {
+            position: absolute;
+            top: 1.2rem;
+            right: 1.2rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .modal-close:hover { color: var(--text-main); }
+        .modal-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+        .modal-header i { font-size: 2rem; color: var(--secondary); }
+        .modal-header h3 { font-size: 1.4rem; }
+        .modal-body { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem; }
+        .modal-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; }
+
+        /* ===== CONTACT ===== */
+        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+        .contact-item { display: flex; align-items: center; gap: 1rem; background: var(--bg-card); padding: 1rem; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 1rem; }
+        .contact-item i { color: var(--primary); font-size: 1.2rem; }
+        
+        .form-group { margin-bottom: 1rem; }
+        .form-control { width: 100%; padding: 0.9rem 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; color: var(--text-main); outline: none; }
+        .form-control:focus { border-color: var(--primary); }
+        textarea.form-control { resize: vertical; min-height: 110px; }
+
+        /* ===== FOOTER ===== */
+        footer { padding: 2rem 5%; text-align: center; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.85rem; }
+        .social-links { display: flex; justify-content: center; gap: 1.2rem; margin-bottom: 0.8rem; }
+        .social-links a { color: var(--text-muted); font-size: 1.2rem; }
+        .social-links a:hover { color: var(--primary); }
+
+        /* RESPONSIVE */
+        @media (max-width: 850px) {
+            .hero-grid, .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+            .hero { text-align: center; }
+            .hero-actions { justify-content: center; }
+            .hero-badge { margin: 0 auto 1.5rem auto; }
+            .nav-links { display: none; }
+            .menu-btn { display: block; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- FOOLPROOF LOADER -->
+    <div class="loader">
+        <div class="loader-text">&lt;Aayush Jangra /&gt;</div>
+        <div class="loader-bar"><div class="loader-progress"></div></div>
+    </div>
+
+    <!-- NAVBAR -->
+    <header>
+        <a href="#home" class="logo">&lt;Aayush Jangra /&gt;</a>
+        
+        <nav class="nav-links">
+            <a href="#about">About</a>
+            <a href="#qualifications">Qualifications</a>
+            <a href="#projects">Projects</a>
+            <a href="#contact" class="nav-cta">Let's Talk</a>
+        </nav>
+
+        <button class="menu-btn" id="menuBtn" aria-label="Toggle Menu">
+            <i class="fas fa-bars"></i>
+        </button>
+    </header>
+
+    <!-- MOBILE NAV -->
+    <nav class="mobile-nav" id="mobileNav">
+        <a href="#home" class="mobile-link">Home</a>
+        <a href="#about" class="mobile-link">About</a>
+        <a href="#qualifications" class="mobile-link">Qualifications</a>
+        <a href="#projects" class="mobile-link">Projects</a>
+        <a href="#contact" class="mobile-link" style="color: var(--primary);">Contact</a>
+    </nav>
+
+    <main>
+        <!-- HERO -->
+        <section id="home" class="hero section">
+            <div class="container hero-grid">
+                <div>
+                    <div class="hero-badge">
+                        <div class="pulse"></div> Available for Work
+                    </div>
+                    <h1>Hi, I'm <span class="gradient-text">Aayush Jangra</span></h1>
+                    <div class="hero-subtitle">Software Developer</div>
+                    <p>Building high-performance web applications, modern digital platforms, and robust software systems.</p>
+                    <div class="hero-actions">
+                        <a href="#projects" class="btn btn-primary"><i class="fas fa-code"></i> View Work</a>
+                        <a href="#contact" class="btn btn-outline"><i class="fas fa-envelope"></i> Contact Me</a>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <i class="fas fa-laptop-code"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT -->
+        <section id="about" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">// 01. ABOUT ME</span>
+                    <h2 class="section-title">Behind the <span class="gradient-text">Code</span></h2>
+                </div>
+                
+                <div class="about-grid">
+                    <div class="code-card">
+                        <div class="code-header">
+                            <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+                        </div>
+                        <div class="code-body">
+                            <span class="code-keyword">const</span> <span class="code-function">developer</span> = {<br>
+                            &nbsp;&nbsp;name: <span class="code-string">"Aayush Jangra"</span>,<br>
+                            &nbsp;&nbsp;role: <span class="code-string">"Full-Stack Devloper"</span>,<br>
+                            &nbsp;&nbsp;location: <span class="code-string">"Kurukshetra, Haryana"</span>,<br>
+                            &nbsp;&nbsp;available: <span class="code-keyword">true</span><br>
+                            };
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 style="font-size: 1.6rem; margin-bottom: 1rem;">Passionate Software Engineer</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 1rem;">Over 5 years of professional experience building modern digital applications. Focused on writing clean, readable, and scalable software.</p>
+                        
+                        <div class="skills-container">
+                            <span class="skill-tag">JavaScript / TS</span>
+                            <span class="skill-tag">React / Next.js</span>
+                            <span class="skill-tag">Node.js</span>
+                            <span class="skill-tag">Python</span>
+                            <span class="skill-tag">PostgreSQL</span>
+                            <span class="skill-tag">AWS</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- QUALIFICATIONS -->
+        <section id="qualifications" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">// 02. BACKGROUND</span>
+                    <h2 class="section-title">My <span class="gradient-text">Qualifications</span></h2>
+                </div>
+
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="switchTab('work', this)">Work Experience</button>
+                    <button class="tab-btn" onclick="switchTab('education', this)">Education</button>
+                </div>
+
+                <div class="tab-content active" id="work">
+                    <div class="timeline-item">
+                        <span class="timeline-date">2021 — Present</span>
+                        <h3 class="timeline-title">Senior Software Engineer</h3>
+                        <div class="timeline-subtitle">TechNova Solutions</div>
+                        <p style="color: var(--text-muted);">Lead front-end engineer directing web development and microservice API design.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="timeline-date">2018 — 2021</span>
+                        <h3 class="timeline-title">Full-Stack Developer</h3>
+                        <div class="timeline-subtitle">CloudSphere Inc.</div>
+                        <p style="color: var(--text-muted);">Developed scalable cloud web interfaces serving 50k+ daily users.</p>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="education">
+                    <div class="timeline-item">
+                        <span class="timeline-date">2024 -2028</span>
+                        <h3 class="timeline-title"> Computer Science</h3>
+                        <div class="timeline-subtitle">Kurukshetra University</div>
+                        <p style="color: var(--text-muted);">Specialized in Distributed Systems and Software Architecture.</p>
+                    </div>
+                  <div class="timeline-item">
+                        <span class="timeline-date">2024— 2028</span>
+                        <h3 class="timeline-title">Bachlors of TechnologySoftware Engineering</h3>
+                        <div class="timeline-subtitle">Kurukshetra University </div>
+                        <p style="color: var(--text-muted);">Graduated with Gratitude</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- WORKING PROJECTS SECTION -->
+        <section id="projects" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">// 03. PORTFOLIO</span>
+                    <h2 class="section-title">Featured <span class="gradient-text">Projects</span></h2>
+                </div>
+
+                <div class="projects-grid">
+                    <!-- Project 1 -->
+                    <div class="project-card">
+                        <div class="project-icon"><i class="fas fa-layer-group"></i></div>
+                        <h3 class="project-title">TaskForge Pro</h3>
+                        <p class="project-desc">Enterprise workflow platform with real-time kanban boards, task dependencies, and automated team collaboration tools.</p>
+                        <div class="project-tech">
+                            <span>React</span><span>Node.js</span><span>PostgreSQL</span>
+                        </div>
+                        <div class="project-links">
+                            <!-- Direct GitHub Link -->
+                            <a href="https://github.com/facebook/react" target="_blank" rel="noopener noreferrer" class="project-btn github">
+                                <i class="fab fa-github"></i> Code
+                            </a>
+                            <!-- Interactive Live Preview Button -->
+                            <button class="project-btn demo" onclick="openDemoModal('TaskForge Pro', 'Enterprise workflow platform with real-time kanban boards and automated team collaboration tools. Built using React, Node.js, and PostgreSQL for maximum performance.', ['React', 'Node.js', 'PostgreSQL'], 'https://github.com/facebook/react')">
+                                <i class="fas fa-external-link-alt"></i> Live Demo
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Project 2 -->
+                    <div class="project-card">
+                        <div class="project-icon"><i class="fas fa-chart-line"></i></div>
+                        <h3 class="project-title">Analytics Dashboard</h3>
+                        <p class="project-desc">Real-time metrics visualizer handling over 100k daily data points with responsive charts and AI-based insights.</p>
+                        <div class="project-tech">
+                            <span>Vue.js</span><span>Python</span><span>FastAPI</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://github.com/vuejs/core" target="_blank" rel="noopener noreferrer" class="project-btn github">
+                                <i class="fab fa-github"></i> Code
+                            </a>
+                            <button class="project-btn demo" onclick="openDemoModal('Analytics Dashboard', 'A high-throughput analytics engine processing over 100k telemetry points per day with dynamic chart rendering and real-time alerts.', ['Vue.js', 'Python', 'FastAPI', 'Chart.js'], 'https://github.com/vuejs/core')">
+                                <i class="fas fa-external-link-alt"></i> Live Demo
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Project 3 -->
+                    <div class="project-card">
+                        <div class="project-icon"><i class="fas fa-mobile-alt"></i></div>
+                        <h3 class="project-title">FitPulse Mobile</h3>
+                        <p class="project-desc">Cross-platform health tracking app featuring custom workout plans, meal logging, and Bluetooth wearable syncing.</p>
+                        <div class="project-tech">
+                            <span>React Native</span><span>Firebase</span><span>GraphQL</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://github.com/facebook/react-native" target="_blank" rel="noopener noreferrer" class="project-btn github">
+                                <i class="fab fa-github"></i> Code
+                            </a>
+                            <button class="project-btn demo" onclick="openDemoModal('FitPulse Mobile', 'Mobile health & fitness tracker connected via Bluetooth Low Energy (BLE) to wearable devices. Provides real-time heartbeat and calorie tracking.', ['React Native', 'Firebase', 'GraphQL'], 'https://github.com/facebook/react-native')">
+                                <i class="fas fa-external-link-alt"></i> Live Demo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT -->
+        <section id="contact" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">// 04. CONTACT</span>
+                    <h2 class="section-title">Let's <span class="gradient-text">Connect</span></h2>
+                </div>
+
+                <div class="contact-grid">
+                    <div>
+                        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Have a project in mind or want to chat? Send me a message!</p>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <small style="color: var(--text-muted); display: block;">Email</small>
+                                <strong>aayushjangra@gmail.com</strong>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <small style="color: var(--text-muted); display: block;">Location</small>
+                                <strong>Kurukshetra, Haryana</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" class="form-control" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-control" placeholder="Your Message" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- LIVE DEMO POPUP MODAL -->
+    <div class="modal-overlay" id="demoModal">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeDemoModal()">&times;</button>
+            <div class="modal-header">
+                <i class="fas fa-laptop-code"></i>
+                <h3 id="modalTitle">Project Title</h3>
+            </div>
+            <p class="modal-body" id="modalDesc">Project description text goes here.</p>
+            <div class="project-tech" id="modalTech"></div>
+            <div class="modal-actions">
+                <a id="modalGithubLink" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                    <i class="fab fa-github"></i> Visit Repository
+                </a>
+                <button class="btn btn-outline" onclick="closeDemoModal()">Close Preview</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="social-links">
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a>
+        </div>
+        <p>&copy; 2024 Aayush Jangra. All rights reserved.</p>
+    </footer>
+
+    <!-- LIGHTWEIGHT JAVASCRIPT -->
+    <script>
+        // Tab switching function
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            btn.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Mobile Nav logic
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileNav = document.getElementById('mobileNav');
+        
+        menuBtn.addEventListener('click', () => {
+            mobileNav.classList.toggle('active');
+        });
+
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => mobileNav.classList.remove('active'));
+        });
+
+        // Live Demo Modal Logic
+        const demoModal = document.getElementById('demoModal');
+        
+        function openDemoModal(title, desc, techArray, githubUrl) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalDesc').textContent = desc;
+            
+            const techContainer = document.getElementById('modalTech');
+            techContainer.innerHTML = '';
+            techArray.forEach(tech => {
+                const tag = document.createElement('span');
+                tag.textContent = tech;
+                techContainer.appendChild(tag);
+            });
+
+            document.getElementById('modalGithubLink').href = githubUrl;
+            demoModal.classList.add('active');
+        }
+
+        function closeDemoModal() {
+            demoModal.classList.remove('active');
+        }
+
+        // Close modal when clicking background
+        demoModal.addEventListener('click', (e) => {
+            if(e.target === demoModal) closeDemoModal();
+        });
+
+        // Contact Form submit response
+        document.getElementById('contactForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Thank you! Message sent.');
+            e.target.reset();
+        });
+    </script>
+</body>
+</html>
